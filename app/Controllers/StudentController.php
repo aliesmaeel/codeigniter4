@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models\Student;
+
+class StudentController extends BaseController
+{
+
+    public function index(){
+
+        $students=new Student();
+        $data['students']=$students->findAll();
+
+        return view('students/index',$data);
+    }
+
+    public function create(){
+        return view('students/create');
+    }
+
+    public function store(){
+        $students=new Student();
+        $data=[
+            'name'=>$this->request->getPost('name'),
+            'email'=>$this->request->getPost('email'),
+            'phone'=>$this->request->getPost('phone'),
+            'course'=>$this->request->getPost('course'),
+        ];
+
+        $students->save($data);
+        return redirect()->to('/students')->with('message','Student Inserted Successfully');
+    }
+
+    public function edit($id=null){
+        $student=new Student();
+        $data['student']=$student->find($id);
+        return view('students/student',$data);
+
+    }
+
+
+    public function update($id){
+        $student=new Student();
+        $student->find($id);
+        $data=[
+            'name'=>$this->request->getPost('name'),
+            'email'=>$this->request->getPost('email'),
+            'phone'=>$this->request->getPost('phone'),
+            'course'=>$this->request->getPost('course'),
+        ];
+        $student->update($id,$data);
+        return redirect()->to('/students')->with('message','Student Updated Successfully');
+
+    }
+
+    public function delete($id){
+        $student=new Student();
+        $student->delete($id);
+        return redirect()->to('/students')->with('message','Student Deleted Successfully');
+    }
+
+}
