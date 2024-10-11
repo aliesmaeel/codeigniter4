@@ -1,7 +1,7 @@
 
 <?= $this->extend('layouts/master.php') ?>
 
-<?= $this->section('navbar') ?>
+<?= $this->section('content') ?>
 
 <?= $this->include('includes/navbar.php') ?>
 

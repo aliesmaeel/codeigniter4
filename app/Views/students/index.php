@@ -1,13 +1,13 @@
 
 <?= $this->extend('layouts/master.php') ?>
 
-<?= $this->section('navbar') ?>
+<?= $this->section('content') ?>
 <?= $this->include('includes/navbar.php') ?>
 
 <div class="container">
     <?php if (session()->getFlashdata('message')) {
         ?>
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success text-center" role="alert">
            <?= session()->getFlashdata('message'); ?>
     </div>
     <?php
@@ -15,13 +15,14 @@
 
 
     <div class="card-header">
-        <h5>Students Data
+        <h5 class="text-center">Students Data (<span class="students-num"> <?= sizeof($students) ?> </span>)  </h5>
+        <div class="d-flex justify-content-between">
             <a href="<?= base_url('students/create')?>" class="btn btn-info btn-sm float-right">ADD</a>
-        </h5>
-
+            <a href="<?= base_url('/students/create-random')?>" class="btn btn-info btn-sm float-right">Create Random</a>
+        </div>
     </div>
-<table class="table">
-    <thead class="thead-dark">
+<table class="table" id="myTable">
+    <thead class="thead-dark table-dark">
     <tr>
         <th scope="col">#</th>
         <th scope="col">Name</th>
@@ -29,6 +30,7 @@
         <th scope="col">Email</th>
         <th scope="col">Course</th>
         <th scope="col">Action</th>
+        <th scope="col">Ajax Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -44,6 +46,10 @@
                 <a href="<?= base_url('/student/delete/'.$student['id']) ?>" class="btn btn-danger btn-sm">Delete</a>
         </td>
 
+        <td>
+            <button value="<?= $student['id'] ?>" href="<?= base_url('/student/delete/'.$student['id']) ?>"
+               class="btn-confirm btn btn-danger btn-sm">Delete</button>
+        </td>
     </tr>
     <?php
     endforeach; ?>
@@ -52,3 +58,5 @@
 </table>
 </div>
 <?= $this->endSection() ?>
+
+
