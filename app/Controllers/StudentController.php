@@ -3,6 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\Student;
+use CodeIgniter\Test\Fabricator;
+use Faker\Factory as Faker;
+
+
 
 class StudentController extends BaseController
 {
@@ -58,6 +62,28 @@ class StudentController extends BaseController
         $student=new Student();
         $student->delete($id);
         return redirect()->to('/students')->with('message','Student Deleted Successfully');
+    }
+
+    public function ajaxDelete($id){
+        $student=new Student();
+        $student->delete($id);
+        return;
+    }
+
+    public function createRandom(){
+
+        $faker = Faker::create();
+        $student = new Student();
+        $data=[
+            'name'=>$faker->firstName,
+            'email'=>$faker->email,
+            'phone'=>$faker->phoneNumber,
+            'course'=>$faker->lastName,
+        ];
+
+        $student->save($data);
+
+        return redirect()->to('/students')->with('message', 'Fake Student Inserted Successfully');
     }
 
 }
