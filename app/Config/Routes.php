@@ -14,3 +14,7 @@ $routes->post('/students/create', 'StudentController::store');
 $routes->get('/student/edit/(:num)', 'StudentController::edit/$1');
 $routes->put('/student/update/(:num)', 'StudentController::update/$1');
 $routes->get('/student/delete/(:num)', 'StudentController::delete/$1');
+
+$routes->get('/student/ajax-delete/(:num)', 'StudentController::ajaxDelete/$1');
+
+$routes->get('/students/create-random', 'StudentController::createRandom');
