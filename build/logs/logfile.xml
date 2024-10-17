@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\wamp64\www\codeigniter4\phpunit.xml.dist" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.190280">
+    <testsuite name="App" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.190280">
+      <testsuite name="unit\FirstTest" file="C:\wamp64\www\codeigniter4\tests\unit\FirstTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.190280">
+        <testcase name="testMultiplicationOfTwoNumbers" file="C:\wamp64\www\codeigniter4\tests\unit\FirstTest.php" line="10" class="unit\FirstTest" classname="unit.FirstTest" assertions="1" time="0.190280"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
