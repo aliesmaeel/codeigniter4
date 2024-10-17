@@ -39,14 +39,8 @@ class CreateUsersTable extends Migration
                 'type' => 'TEXT',
                 'null' => true,
             ],
-            'created_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ],
-            'updated_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ]
+            'created_at timestamp default current_timestamp',
+            'updated_at timestamp default current_timestamp on update current_timestamp',
         ]);
 
         $this->forge->addKey('id', true);
@@ -56,6 +50,6 @@ class CreateUsersTable extends Migration
 
     public function down()
     {
-        //
+        $this->forge->dropTable('users');
     }
 }
