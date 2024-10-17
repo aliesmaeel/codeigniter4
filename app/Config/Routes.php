@@ -9,12 +9,12 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 $routes->group('admin',static function ($routes) {
-    $routes->get('',[], static function ($routes) {
-        $routes->view('examplePage','examplePage');
+    $routes->group('',[], static function ($routes) {
+        $routes->view('example-page','example-page');
     });
 
-    $routes->get('',[], static function ($routes) {
-        $routes->view('exampleAuth','exampleAuth');
+    $routes->group('',[], static function ($routes) {
+        $routes->view('example-auth','example-auth');
     });
 
 });
