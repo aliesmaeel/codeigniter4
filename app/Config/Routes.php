@@ -8,13 +8,13 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', 'Home::index');
 
-$routes->get('/students', 'StudentController::index');
-$routes->get('/students/create', 'StudentController::create');
-$routes->post('/students/create', 'StudentController::store');
-$routes->get('/student/edit/(:num)', 'StudentController::edit/$1');
-$routes->put('/student/update/(:num)', 'StudentController::update/$1');
-$routes->get('/student/delete/(:num)', 'StudentController::delete/$1');
+$routes->group('admin',static function ($routes) {
+    $routes->get('',[], static function ($routes) {
+        $routes->view('examplePage','examplePage');
+    });
 
-$routes->get('/student/ajax-delete/(:num)', 'StudentController::ajaxDelete/$1');
+    $routes->get('',[], static function ($routes) {
+        $routes->view('exampleAuth','exampleAuth');
+    });
 
-$routes->get('/students/create-random', 'StudentController::createRandom');
+});
