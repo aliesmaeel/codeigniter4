@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
-use App\Libraries\CIAuth;
+use App\Libraries\SessionAuth;
 
 class AdminController extends BaseController
 {
@@ -17,7 +17,7 @@ class AdminController extends BaseController
     }
 
     public function logoutHandler(){
-        CIAuth::forget();
+        SessionAuth::logout();
         return redirect()->route('admin.login.form')
             ->with('fail','You are logged out !');
     }
