@@ -19,10 +19,7 @@ class AuthController extends BaseController
 
     public function loginForm()
     {
-        $data=[
-            'pageTitle'=>'Login',
-            'validation'=>null
-        ];
+        $data=[ 'pageTitle'=>'Login','validation'=>null ];
         return view('backend/pages/auth/login',$data);
     }
 
@@ -185,6 +182,77 @@ class AuthController extends BaseController
                     'token'=>$token
                 ]);
             }
+        }
+    }
+
+    public function resetPasswordHandler($token){
+        $isValid=$this->validate([
+            'new_password'=>[
+                'rules'=>'required|min_length[5]|max_length[20]|is_password_strong[new_password]',
+                'errors'=>[
+                    'required'=>'Enter new password',
+                    'min_length'=>'Password must be longer than 5 chars',
+                    'max_length'=>'Password must be shorter than 20 chars',
+                    'is_password_strong'=>'New Password must contains at least 1 uppercase 1 lowercase 
+                    1 number 1 special char'
+                ]
+            ],
+            'confirm_new_password'=>[
+                'rules'=>'required|matches[new_password]',
+                'errors'=>[
+                    'required'=>'Confirm new password',
+                    'matches'=>'passwords not matches'
+                ]
+            ]
+        ]);
+        if(!$isValid){
+            return view('backend/pages/auth/reset',[
+                'pageTitle'=>'Reset Password',
+                'validation'=>null,
+                'token'=>$token
+            ]);
+        }else{
+            $passwordResetPassword=new PasswordResetToken();
+            $get_token=$passwordResetPassword->asObject()->where('token',$token)->first();
+            $user=new User();
+            $user_info=$user->asObject()->where('email',$get_token->email)->first();
+
+            if(!$get_token){
+                return redirect()->back()
+                    ->with('fail','Invalid token')
+                    ->withInput();
+            }else{
+                $user->where('email',$user_info->email)
+                    ->set(['password'=>Hash::make($this->request->getVar('new_password'))])
+                    ->update();
+                $mailData=array(
+                    'user'=>$user_info,
+                    'new_password'=>$this->request->getVar('new_password'),
+
+                );
+
+                $view=\Config\Services::renderer();
+                $mail_body=$view->setVar('maildata',$mailData)
+                    ->render('email-templates/password-changed-email-template');
+                $mailConfig=array(
+                    'mail_from_email'=>env('EMAIL_FROM_ADDRESS'),
+                    'mail_from_name'=>env('EMAIL_FROM_NAME'),
+                    'mail_recipient_email'=>$user_info->email,
+                    'mail_recipient_name'=>$user_info->name,
+                    'mail_subject'=>'Reset Password',
+                    'mail_body'=>$mail_body
+                );
+                if (sendEmail($mailConfig)){
+                   $passwordResetPassword->where('email',$user_info->email)->delete();
+                   return redirect()->route('admin.login.form')
+                            ->with('success','Done your password has been changed Successfully');
+
+                }else{
+                    return redirect()->back()
+                        ->with('fail','Something went wrong')->withInput();
+                }
+            }
+
         }
     }
 }

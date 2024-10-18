@@ -10,7 +10,7 @@
             <?= csrf_field() ?>
             <?php  if (!empty(session()->getFlashdata('success'))) : ?>
                 <div class="alert alert-success" >
-                    <?php session()->getFlashdata('success') ?>
+                    <?= session()->getFlashdata('success') ?>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
