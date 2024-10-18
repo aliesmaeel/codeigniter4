@@ -64,9 +64,7 @@
         </div>
     </div>
 </div>
-<div
-    class="login-wrap d-flex align-items-center flex-wrap justify-content-center"
->
+<div class="login-wrap d-flex align-items-center flex-wrap justify-content-center">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6 col-lg-7">
