@@ -5,8 +5,7 @@
         <div class="login-title">
             <h2 class="text-center text-primary">Login</h2>
         </div>
-        <?php $validation =\Config\Services::validation();
-        ?>
+        <?php $validation =\Config\Services::validation(); ?>
         <form method="post" action="<?= route_to('admin.login.handler') ?>">
             <?= csrf_field() ?>
             <?php  if (!empty(session()->getFlashdata('success'))) : ?>
@@ -64,7 +63,7 @@
                 </div>
                 <div class="col-6">
                     <div class="forgot-password">
-                        <a href="forgot-password.html">Forgot Password</a>
+                        <a href="<?= route_to('admin.forgot.form') ?>">Forgot Password</a>
                     </div>
                 </div>
             </div>
