@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Libraries;
+use App\Models\User;
+use phpDocumentor\Reflection\Types\Self_;
 
 class SessionAuth
 {
@@ -42,6 +44,8 @@ class SessionAuth
     {
         $session = session();
         if (self::isAuthenticated()) {
+            $user=new User();
+            return $user->asObject()->where('id',self::id())->first();
             return $session->get('user_data');
         }
 

@@ -2,6 +2,8 @@
 
 namespace App\Validation;
 
+use App\Libraries\SessionAuth;
+
 class AuthValidation
 {
     public static function getLoginRules($fieldType)
@@ -56,6 +58,26 @@ class AuthValidation
                 'errors' => [
                     'required' => 'Confirm new password',
                     'matches' => 'Passwords do not match'
+                ]
+            ]
+        ];
+    }
+
+    public static function getProfileRules(){
+        $userId=SessionAuth::id();
+        return [
+            'name' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Name is required',
+                ]
+            ],
+            'username' => [
+                'rules' => 'required|min_length[4]|is_unique[users.username,id,'.$userId.']',
+                'errors' => [
+                    'required' => 'Username is required ',
+                    'min_length' => 'Username must be longer than 4 chars ',
+                    'is_unique' => 'Username is already taken ',
                 ]
             ]
         ];

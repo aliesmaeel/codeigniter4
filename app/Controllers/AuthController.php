@@ -13,10 +13,12 @@ use App\Validation\AuthValidation;
 
 class AuthController extends BaseController
 {
-    protected $helpers = ['url', 'form'];
+    protected $helpers = ['session_helper','url','form','email_helper'];
 
     public function loginForm()
     {
+
+
         return view('backend/pages/auth/login', ['pageTitle' => 'Login', 'validation' => null]);
     }
 
