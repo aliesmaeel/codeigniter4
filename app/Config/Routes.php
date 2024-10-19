@@ -26,7 +26,7 @@ $routes->group('admin',static function ($routes) {
         $routes->get('password/reset/(:any)','AuthController::resetPassword/$1',
             ['as'=>'admin.reset-password']);
         $routes->post('reset-password-handler/(:any)','AuthController::resetPasswordHandler/$1',
-            ['as'=>'reset-password-handler']);
+            ['as'=>'reset-password-handler']);;
     });
 
 });
