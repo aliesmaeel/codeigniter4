@@ -6,7 +6,6 @@ class EmailService
 {
     public static function sendEmail($mailConfig)
     {
-        // Load necessary helpers/libraries for email
         helper('email_helper');
 
         $view = \Config\Services::renderer();

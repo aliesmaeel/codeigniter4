@@ -40,7 +40,34 @@ class AuthValidation
 
         return $rules;
     }
-
+    public static function getChangePasswordRules(){
+        return [
+            'current_password'=>[
+                'rules'=>'required|min_length[5]|check_current_password[current_password]',
+                'errors'=>[
+                    'required' => 'Enter Current password',
+                    'min_length' => 'Password must be longer than 5 chars',
+                    'check_current_password' => 'The Current Password is not correct',
+                ]
+               ],
+            'new_password' => [
+                'rules' => 'required|min_length[5]|max_length[20]|is_password_strong[new_password]',
+                'errors' => [
+                    'required' => 'Enter new password',
+                    'min_length' => 'Password must be longer than 5 chars',
+                    'max_length' => 'Password must be shorter than 20 chars',
+                    'is_password_strong' => 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special char'
+                ]
+            ],
+            'confirm_new_password' => [
+                'rules' => 'required|matches[new_password]',
+                'errors' => [
+                    'required' => 'Confirm new password',
+                    'matches' => 'Passwords do not match'
+                ]
+            ]
+        ];
+    }
     public static function getPasswordResetRules()
     {
         return [

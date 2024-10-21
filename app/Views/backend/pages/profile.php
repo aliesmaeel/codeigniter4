@@ -24,7 +24,10 @@
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-30">
         <div class="pd-20 card-box height-100-p">
             <div class="profile-photo">
-                <a href="modal" data-toggle="modal" data-target="#modal" class="edit-avatar"><i class="fa fa-pencil"></i></a>
+                <a href="javascript:;" onclick="event.preventDefault();document.getElementById('user_profile_file').click()"
+                   class="edit-avatar"><i class="fa fa-pencil"></i></a>
+                <input class="d-none" style="opacity: 0" type="file" name="user_profile_file" id="user_profile_file">
+
                 <img src="<?= get_user()->picture==null ? '/images/users/avatar.png' : '/images/users/'.get_user()->picture ?>"
                      alt="" class="avatar-photo user-profile-photo">
             </div>
@@ -53,8 +56,7 @@
                             <div class="pd-20">
 
                                 <form id="personal_details_form"
-                                        action="<?= route_to('update-personal-details')?>" method="post"
-                                >
+                                        action="<?= route_to('update-personal-details')?>" method="post">
                                     <div class="form-group row">
                                         <label class="col-sm-12 col-md-2 col-form-label">Name</label>
                                         <div class="col-sm-12 col-md-10">
@@ -88,7 +90,46 @@
                         <!-- Tasks Tab start -->
                         <div class="tab-pane fade" id="change_password" role="tabpanel">
                             <div class="pd-20 profile-task-wrap">
-                        ---------change password--------
+
+                                <form id="change_password_form"
+                                      action="<?= route_to('change-password')?>" method="post">
+                                    <input type="hidden" name="<?=csrf_token()?>"
+                                           class="csrf_data"
+                                           value="<?=csrf_hash()?>">
+                                    <div class="form-group row">
+                                        <label class="col-sm-12 col-md-2 col-form-label">Current Password</label>
+                                        <div class="col-sm-12 col-md-10">
+                                            <input
+                                                   class="form-control" type="password"
+                                                   placeholder="Enter Current Password" name="current_password">
+                                            <span class="text-danger error-text current_password_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12 col-md-2 col-form-label">New Password</label>
+                                        <div class="col-sm-12 col-md-10">
+                                            <input
+                                                   class="form-control" type="password"
+                                                   placeholder="Enter New Password" name="new_password">
+                                            <span class="text-danger error-text new_password_error"></span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-12 col-md-2 col-form-label">Confirm New Password</label>
+                                        <div class="col-sm-12 col-md-10">
+                                            <input
+                                                   class="form-control" type="password"
+                                                   placeholder="Retype New Password" name="confirm_new_password">
+                                            <span class="text-danger error-text confirm_new_password_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -134,6 +175,69 @@
            }
        })
     });
+
+    $('#user_profile_file').ijaboCropTool({
+        preview : '.avatar-photo',
+        setRatio:1,
+        allowedExtensions: ['jpg', 'jpeg','png'],
+        buttonsText:['CROP','QUIT'],
+        buttonsColor:['#30bf7d','#ee5155', -15],
+        processUrl:'<?= route_to('update-profile-picture') ?>',
+        withCSRF:['_token','{{ csrf_token() }}'],
+        onSuccess:function(message, element, status){
+            if (status===1){
+
+                toastr.success(message)
+            }else
+            {
+                toastr.error(message)
+            }
+        },
+        onError:function(message, element, status){
+            alert(message);
+        }
+    });
+
+    $('#change_password_form').submit(function (e){
+        e.preventDefault();
+        var csrfname=$('.csrf_data').attr('name');
+        var csrfHash=$('.csrf_data').val();
+        var form=this;
+        var formData=new FormData(form);
+        formData.append(csrfname,csrfHash)
+        $.ajax({
+            url:$(form).attr('action'),
+            method:$(form).attr('method'),
+            data:formData,
+            processData:false,
+            dataType:'json',
+            contentType:false,
+            beforeSend:function (){
+                toastr.remove();
+                $(form).find('span.error-text').text('');
+            },
+            success:function (response){
+                $('.csrf_data').val(response.token);
+                console.log($.isEmptyObject(response.error),response.status);
+                if($.isEmptyObject(response.error)){
+                    if(response.status==1){
+                        $(form)[0].reset();
+
+                        toastr.success(response.msg);
+
+                    }else{
+                        toastr.error(response.msg)
+                    }
+                }else{
+                    $.each(response.error,function (prefix,val){
+                        $(form).find('span.'+prefix+'_error').text(val)
+                    })
+                }
+            }
+        })
+    });
+
+
 </script>
 <?= $this->endSection('scripts')?>
 

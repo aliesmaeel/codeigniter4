@@ -17,8 +17,6 @@ class AuthController extends BaseController
 
     public function loginForm()
     {
-
-
         return view('backend/pages/auth/login', ['pageTitle' => 'Login', 'validation' => null]);
     }
 
