@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+
 $routes->get('/', 'Home::index');
 
 $routes->group('admin',static function ($routes) {
@@ -15,6 +16,12 @@ $routes->group('admin',static function ($routes) {
        $routes->get('profile','AdminController::profile',['as'=>'admin.profile']);
        $routes->post('update-personal-details','AdminController::updatePersonalDetails',
            ['as'=>'update-personal-details']);
+$routes->post('update-profile-picture','AdminController::updateProfilePicture', ['as'=>'update-profile-picture']);
+
+        $routes->post('change-password','AdminController::changePassword', ['as'=>'change-password']);
+        $routes->get('settings','SettingsController::settings', ['as'=>'settings']);
+        $routes->post('update-general-settings','SettingsController::updateGeneralSettings',
+            ['as'=>'update-general-settings']);
     });
 
     $routes->group('',['filter'=>'cifilter:guest'], static function ($routes) {
@@ -26,7 +33,7 @@ $routes->group('admin',static function ($routes) {
         $routes->get('password/reset/(:any)','AuthController::resetPassword/$1',
             ['as'=>'admin.reset-password']);
         $routes->post('reset-password-handler/(:any)','AuthController::resetPasswordHandler/$1',
-            ['as'=>'reset-password-handler']);;
+            ['as'=>'reset-password-handler']);
     });
 
 });

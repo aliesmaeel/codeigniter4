@@ -50,15 +50,6 @@ class AdminController extends BaseController
         $old_picture=$user_info->picture;
         $new_filename='IIMG_'.$user_id.$file->getRandomName();
 
-//        if($file->move($path,$new_filename)){
-//            if($old_picture !==null && file_exists($path.$old_picture)){
-//                unlink($path.$old_picture);
-//            }
-//            $user->where('id',$user_id)->set(['picture'=>$new_filename])->update();
-//            echo json_encode(['status'=>1,'msg'=>'Successfully updated the image']);
-//        }else{
-//            echo json_encode(['status'=>0,'msg'=>'Something Went Wrong']);
-//        }
 
         $upload_image=\Config\Services::image()->withFile($file)
             ->resize(450,450,true,'height')

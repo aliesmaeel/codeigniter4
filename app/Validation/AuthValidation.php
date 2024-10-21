@@ -109,4 +109,22 @@ class AuthValidation
             ]
         ];
     }
+
+    public static function getSettingsRules(){
+        return [
+            'blog_title' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Blog Title is required',
+                ]
+            ],
+            'blog_email' => [
+                'rules' => 'required|valid_email',
+                'errors' => [
+                    'required' => 'Blog Email is required ',
+                    'valid_email' => 'Invalid Email Address ',
+                ]
+            ]
+        ];
+    }
 }
