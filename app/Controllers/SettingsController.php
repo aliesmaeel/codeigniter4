@@ -12,7 +12,7 @@ use App\Models\Setting;
 
 class SettingsController extends BaseController
 {
-    protected $helpers=['session_helper','url','form','email_helper'];
+    protected $helpers=['session_helper','url','form','email_helper','store_helper'];
     public function settings()
     {
         return view('backend/pages/settings', ['pageTitle' => 'Settings', 'validation' => null]);
@@ -45,60 +45,45 @@ class SettingsController extends BaseController
         }
     }
 
-    public function updateBlogLogo(){
-        $request=\Config\Services::request();
+    public function updateBlogLogo()
+    {
+        $request = \Config\Services::request();
 
-        if ($request->isAJAX()){
-                $settings=new Setting();
-                $path='images/blog';
-                $file=$request->getFile('blog_logo');
-                $setting_data=$settings->asObject()->first();
-                $old_blog_logo=$setting_data->blog_logo;
-                $new_file_name='Bloglogo'.$file->getRandomName();
+        if ($request->isAJAX()) {
+            $settings = new Setting();
+            $path = 'images/blog';
+            $file = $request->getFile('blog_logo');
+            $setting_data = $settings->asObject()->first();
+            $old_blog_logo = $setting_data->blog_logo;
 
-                if ($file->move($path,$new_file_name)){
-                        if ($old_blog_logo !=null && file_exists($path.$old_blog_logo)){
-                            unlink($path.$old_blog_logo);
-                        }
-                    $update=$settings->where('id',$setting_data->id)
-                        ->set(['blog_logo'=>$new_file_name,])
-                        ->update();
+            $new_file_name = storeImage($path, $file, $settings, $setting_data->id, 'blog_logo', 'Bloglogo_', $old_blog_logo);
 
-                    if ($update)
-                        return json_encode(['status'=>1,'token'=>csrf_hash(),'msg'=>'Settings Updated Successfully ']);
-                }
-                    return json_encode(['status'=>0,'token'=>csrf_hash(),'msg'=>'SomeThing Went Wrong']);
-
-
+            if ($new_file_name) {
+                return json_encode(['status' => 1, 'token' => csrf_hash(), 'msg' => 'Settings Updated Successfully']);
             }
 
+            return json_encode(['status' => 0, 'token' => csrf_hash(), 'msg' => 'Something Went Wrong']);
+        }
     }
 
-    public function updateBlogFavicon(){
+    public function updateBlogFavicon()
+    {
+        $request = \Config\Services::request();
 
-        $request=\Config\Services::request();
-        if ($request->isAJAX()){
-            $settings=new Setting();
-            $path='images/blog';
-            $file=$request->getFile('blog_favicon');
-            $setting_data=$settings->asObject()->first();
-            $old_blog_logo=$setting_data->blog_logo;
-            $new_file_name='favicon_'.$file->getRandomName();
+        if ($request->isAJAX()) {
+            $settings = new Setting();
+            $path = 'images/blog';
+            $file = $request->getFile('blog_favicon');
+            $setting_data = $settings->asObject()->first();
+            $old_blog_favicon = $setting_data->blog_favicon;
 
-            if ($file->move($path,$new_file_name)){
-                if ($old_blog_logo !=null && file_exists($path.$old_blog_logo)){
-                    unlink($path.$old_blog_favicon);
-                }
-                $update=$settings->where('id',$setting_data->id)
-                    ->set(['blog_favicon'=>$new_file_name,])
-                    ->update();
+            $new_file_name = storeImage($path, $file, $settings, $setting_data->id, 'blog_favicon', 'favicon_', $old_blog_favicon);
 
-                if ($update)
-                    return json_encode(['status'=>1,'token'=>csrf_hash(),'msg'=>'Settings Updated Successfully ']);
+            if ($new_file_name) {
+                return json_encode(['status' => 1, 'token' => csrf_hash(), 'msg' => 'Settings Updated Successfully']);
             }
-            return json_encode(['status'=>0,'token'=>csrf_hash(),'msg'=>'SomeThing Went Wrong']);
 
-
+            return json_encode(['status' => 0, 'token' => csrf_hash(), 'msg' => 'Something Went Wrong']);
         }
     }
 }
