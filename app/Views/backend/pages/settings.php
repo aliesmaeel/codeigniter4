@@ -24,13 +24,13 @@
     <div class="tab">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link text-blue active" data-toggle="tab" href="#general_settings" role="tab" aria-selected="true">Home</a>
+                <a class="nav-link text-blue active" data-toggle="tab" href="#general_settings" role="tab" aria-selected="true">General Settings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-blue" data-toggle="tab" href="#logo_favicon" role="tab" aria-selected="false">Profile</a>
+                <a class="nav-link text-blue" data-toggle="tab" href="#logo_favicon" role="tab" aria-selected="false">Logo & Favicon</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-blue" data-toggle="tab" href="#social_media" role="tab" aria-selected="false">Contact</a>
+                <a class="nav-link text-blue" data-toggle="tab" href="#social_media" role="tab" aria-selected="false">Social media</a>
             </li>
         </ul>
         <div class="tab-content">
@@ -98,13 +98,66 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="logo_favicon" role="tabpanel">
-                <div class="pd-20">
-                    logo_favicon
+                <div class="pd-20 d-flex">
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Set Blog Logo</h5>
+                        <img src="/images/blog/<?= get_settings()->blog_logo ?>"
+
+                             style="height: 150px; display:  <?= (get_settings()->blog_logo) ? 'block' : 'none' ?>"
+                             id="logo-image-preview"
+                        />
+                        <form action="<?=route_to('update-blog-logo')?>"
+                              method="post" enctype="multipart/form-data" id="change_blog_logo_form" >
+                            <input class="settings_csrf_data" type="hidden"
+                                   name="<?=csrf_token()?>" value="<?=csrf_hash()?>">
+
+                            <div class="form-group">
+                                <input type="file" name="blog_logo" id="blog_logo"
+                                       class="form-control">
+                                <span class="text-danger error-text"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" >Change Logo</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Set Blog Favicon</h5>
+                        <img src="/images/blog/<?= get_settings()->blog_favicon ?>" width="300" height="200"
+
+                             style="height: 150px; display:  <?= (get_settings()->blog_favicon) ? 'block' : 'none' ?>"
+                             id="favicon-image-preview"
+                        />
+                        <form action="<?=route_to('update-blog-favicon')?>"
+                              method="post" enctype="multipart/form-data" id="change_blog_favicon_form" >
+                            <input class="settings_csrf_data" type="hidden"
+                                   name="<?=csrf_token()?>" value="<?=csrf_hash()?>">
+
+                            <div class="form-group">
+                                <input type="file" name="blog_favicon" id="blog_favicon"
+                                       class="form-control">
+                                <span class="text-danger error-text"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" >Change Favicon</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
             <div class="tab-pane fade" id="social_media" role="tabpanel">
                 <div class="pd-20">
-                    social_media
+                    <div class="pd-20">
+                            <form action="<?=route_to('update-blog-logo')?>"
+                                  method="post" enctype="multipart/form-data" id="social_media_form" >
+                                <input class="settings_csrf_data" type="hidden"
+                                       name="<?=csrf_token()?>" value="<?=csrf_hash()?>">
+
+                                <div class="form-group">
+                                    <input type="file" name="blog_logo" id="blog_logo"
+                                           class="form-control">
+                                    <span class="text-danger error-text"></span>
+                                </div>
+                                <button type="submit" class="btn btn-primary" >Change social media</button>
+                            </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,6 +204,120 @@
             }
         })
     });
+
+    $('#blog_logo').change(function(event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#logo-image-preview').attr('src', e.target.result);
+                $('#logo-image-preview').attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    });
+
+    $('#change_blog_logo_form').submit(function (e){
+        e.preventDefault();
+
+        var csrfname=$('.settings_csrf_data').attr('name');
+        var csrfHash=$('.settings_csrf_data').val();
+        var form=this;
+        var formData=new FormData(form);
+        formData.append(csrfname,csrfHash)
+        var inputFileVal=$('#blog_logo').val();
+
+        if (inputFileVal !== ''){
+            $.ajax({
+                url:$(form).attr('action'),
+                method:$(form).attr('method'),
+                data:formData,
+                processData:false,
+                dataType:'json',
+                contentType:false,
+                beforeSend:function (){
+                    toastr.remove();
+                    $(form).find('span.error-text').text('');
+                },
+                success:function (response){
+                    $('.settings_csrf_data').val(response.token);
+                    if($.isEmptyObject(response.error)){
+                        if(response.status==1){
+                            toastr.success(response.msg);
+                            $(form).reset();
+                        }else{
+                            toastr.error(response.msg)
+                        }
+                    }else{
+                        $.each(response.error,function (prefix,val){
+                            $(form).find('span.'+prefix+'_error').text(val)
+                        })
+                    }
+                }
+            })
+        }else{
+            $(form).find('span.error-text').text('Please select logo image');
+        }
+
+    });
+
+
+    $('#blog_favicon').change(function(event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#favicon-image-preview').attr('src', e.target.result);
+                $('#favicon-image-preview').attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    });
+
+    $('#change_blog_favicon_form').submit(function (e){
+        e.preventDefault();
+
+        var csrfname=$('.settings_csrf_data').attr('name');
+        var csrfHash=$('.settings_csrf_data').val();
+        var form=this;
+        var formData=new FormData(form);
+        formData.append(csrfname,csrfHash)
+        var inputFileVal=$('#blog_favicon').val();
+
+        if (inputFileVal !== ''){
+            $.ajax({
+                url:$(form).attr('action'),
+                method:$(form).attr('method'),
+                data:formData,
+                processData:false,
+                dataType:'json',
+                contentType:false,
+                beforeSend:function (){
+                    toastr.remove();
+                    $(form).find('span.error-text').text('');
+                },
+                success:function (response){
+                    $('.settings_csrf_data').val(response.token);
+                    if($.isEmptyObject(response.error)){
+                        if(response.status==1){
+                            toastr.success(response.msg);
+                            $(form).reset();
+                        }else{
+                            toastr.error(response.msg)
+                        }
+                    }else{
+                        $.each(response.error,function (prefix,val){
+                            $(form).find('span.'+prefix+'_error').text(val)
+                        })
+                    }
+                }
+            })
+        }else{
+            $(form).find('span.error-text').text('Please select favicon image');
+        }
+
+    });
+
 
 </script>
 <?= $this->endSection()?>

@@ -22,6 +22,10 @@ $routes->post('update-profile-picture','AdminController::updateProfilePicture', 
         $routes->get('settings','SettingsController::settings', ['as'=>'settings']);
         $routes->post('update-general-settings','SettingsController::updateGeneralSettings',
             ['as'=>'update-general-settings']);
+        $routes->post('update-blog-logo','SettingsController::updateBlogLogo',
+            ['as'=>'update-blog-logo']);
+        $routes->post('update-blog-favicon','SettingsController::updateBlogFavicon',
+            ['as'=>'update-blog-favicon']);
     });
 
     $routes->group('',['filter'=>'cifilter:guest'], static function ($routes) {

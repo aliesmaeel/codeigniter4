@@ -44,4 +44,61 @@ class SettingsController extends BaseController
             }
         }
     }
+
+    public function updateBlogLogo(){
+        $request=\Config\Services::request();
+
+        if ($request->isAJAX()){
+                $settings=new Setting();
+                $path='images/blog';
+                $file=$request->getFile('blog_logo');
+                $setting_data=$settings->asObject()->first();
+                $old_blog_logo=$setting_data->blog_logo;
+                $new_file_name='Bloglogo'.$file->getRandomName();
+
+                if ($file->move($path,$new_file_name)){
+                        if ($old_blog_logo !=null && file_exists($path.$old_blog_logo)){
+                            unlink($path.$old_blog_logo);
+                        }
+                    $update=$settings->where('id',$setting_data->id)
+                        ->set(['blog_logo'=>$new_file_name,])
+                        ->update();
+
+                    if ($update)
+                        return json_encode(['status'=>1,'token'=>csrf_hash(),'msg'=>'Settings Updated Successfully ']);
+                }
+                    return json_encode(['status'=>0,'token'=>csrf_hash(),'msg'=>'SomeThing Went Wrong']);
+
+
+            }
+
+    }
+
+    public function updateBlogFavicon(){
+
+        $request=\Config\Services::request();
+        if ($request->isAJAX()){
+            $settings=new Setting();
+            $path='images/blog';
+            $file=$request->getFile('blog_favicon');
+            $setting_data=$settings->asObject()->first();
+            $old_blog_logo=$setting_data->blog_logo;
+            $new_file_name='favicon_'.$file->getRandomName();
+
+            if ($file->move($path,$new_file_name)){
+                if ($old_blog_logo !=null && file_exists($path.$old_blog_logo)){
+                    unlink($path.$old_blog_favicon);
+                }
+                $update=$settings->where('id',$setting_data->id)
+                    ->set(['blog_favicon'=>$new_file_name,])
+                    ->update();
+
+                if ($update)
+                    return json_encode(['status'=>1,'token'=>csrf_hash(),'msg'=>'Settings Updated Successfully ']);
+            }
+            return json_encode(['status'=>0,'token'=>csrf_hash(),'msg'=>'SomeThing Went Wrong']);
+
+
+        }
+    }
 }
