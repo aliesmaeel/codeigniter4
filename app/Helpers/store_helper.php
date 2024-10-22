@@ -11,6 +11,7 @@ use MailSlurp\Apis\InboxControllerApi;
 if (!function_exists('storeImage')) {
     function storeImage($path, $file, $model, $id, $field_name, $prefix, $old_file_name = null)
     {
+
         $new_file_name = $prefix . $file->getRandomName();
 
         if ($file->move($path, $new_file_name)) {
