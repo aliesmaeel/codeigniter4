@@ -3,6 +3,7 @@
 use App\Libraries\SessionAuth;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\SocialMedia;
 
 if (!function_exists('get_user')){
     function get_user()
@@ -42,5 +43,31 @@ function defaultSettings($settings){
     $settings->save($data);
     $new_settings_data=$settings->asObject()->first();
     return $new_settings_data;
+}
+
+
+if (!function_exists('get_social_media')){
+    function get_social_media()
+    {
+        $social_media=new SocialMedia();
+        $social_media_data=$social_media->asObject()->first();
+
+        if(!$social_media_data)
+            return defaultSocialMedia($social_media);
+
+        return $social_media_data;
+    }
+}
+
+function defaultSocialMedia($social_media){
+    $data=[
+        'facebook_url'=>'www.facebook.com',
+        'instagram_url'=>'www.instagram.com',
+        'youtube_url'=>'www.youtube.com',
+        'twitter_url'=>'www.twitter.com',
+    ];
+    $social_media->save($data);
+    $new_social_media_data=$social_media->asObject()->first();
+    return $new_social_media_data;
 }
 

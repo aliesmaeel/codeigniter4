@@ -127,4 +127,33 @@ class AuthValidation
             ]
         ];
     }
+
+    public static function getSocialMediaRules(){
+        return [
+            'facebook_url'=>[
+                'rules'=>'permit_empty|valid_url_strict',
+                'errors'=>[
+                    'valid_url_strict'=>'Invalid url',
+                ]
+            ],
+            'instagram_url'=>[
+                'rules'=>'permit_empty|valid_url_strict',
+                'errors'=>[
+                    'valid_url_strict'=>'Invalid url',
+                ]
+            ],
+            'youtube_url'=>[
+                'rules'=>'permit_empty|valid_url_strict',
+                'errors'=>[
+                    'valid_url_strict'=>'Invalid url',
+                ]
+            ],
+            'twitter_url'=>[
+                'rules'=>'permit_empty|valid_url_strict',
+                'errors'=>[
+                    'valid_url_strict'=>'Invalid url',
+                ]
+            ],
+        ];
+    }
 }

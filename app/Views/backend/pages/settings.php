@@ -145,17 +145,56 @@
             <div class="tab-pane fade" id="social_media" role="tabpanel">
                 <div class="pd-20">
                     <div class="pd-20">
-                            <form action="<?=route_to('update-blog-logo')?>"
+                            <form action="<?=route_to('update-social_media')?>"
                                   method="post" enctype="multipart/form-data" id="social_media_form" >
-                                <input class="settings_csrf_data" type="hidden"
-                                       name="<?=csrf_token()?>" value="<?=csrf_hash()?>">
+                    <input class="settings_csrf_data"
+                           type="hidden"
+                           name="<?=csrf_token()?>"
+                           value="<?=csrf_hash()?>">
 
-                                <div class="form-group">
-                                    <input type="file" name="blog_logo" id="blog_logo"
-                                           class="form-control">
-                                    <span class="text-danger error-text"></span>
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-md-2 col-form-label">Facebook URL</label>
+                                    <div class="col-sm-12 col-md-10">
+                                        <input  value="<?= get_social_media()->facebook_url ?>"
+                                                class="form-control" type="text" name="facebook_url"
+                                                placeholder="Enter Facebook Url">
+                                        <span class="text-danger error-text facebook_url_error"></span>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary" >Change social media</button>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-md-2 col-form-label">Twitter URL</label>
+                                    <div class="col-sm-12 col-md-10">
+                                        <input  value="<?= get_social_media()->twitter_url ?>"
+                                                class="form-control" type="text" name="twitter_url"
+                                                placeholder="Enter Twitter Url">
+                                        <span class="text-danger error-text twitter_url_error"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-md-2 col-form-label">Instagram URL</label>
+                                    <div class="col-sm-12 col-md-10">
+                                        <input  value="<?= get_social_media()->instagram_url ?>"
+                                                class="form-control" type="text" name="instagram_url"
+                                                placeholder="Enter Instagram Url">
+                                        <span class="text-danger error-text instagram_url_error"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-md-2 col-form-label">Youtube URL</label>
+                                    <div class="col-sm-12 col-md-10">
+                                        <input  value="<?= get_social_media()->youtube_url ?>"
+                                                class="form-control" type="text" name="youtube_url"
+                                                placeholder="Enter Instagram Url">
+                                        <span class="text-danger error-text youtube_url_error"></span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" >Save Changes</button>
                             </form>
                     </div>
                 </div>
@@ -318,6 +357,46 @@
 
     });
 
+
+    $('#social_media_form').submit(function (e){
+        e.preventDefault();
+
+        var csrfname=$('.settings_csrf_data').attr('name');
+        var csrfHash=$('.settings_csrf_data').val();
+        var form=this;
+        var formData=new FormData(form);
+        formData.append(csrfname,csrfHash)
+
+            $.ajax({
+                url:$(form).attr('action'),
+                method:$(form).attr('method'),
+                data:formData,
+                processData:false,
+                dataType:'json',
+                contentType:false,
+                beforeSend:function (){
+                    toastr.remove();
+                    $(form).find('span.error-text').text('');
+                },
+                success:function (response){
+                    $('.settings_csrf_data').val(response.token);
+                    if($.isEmptyObject(response.error)){
+                        if(response.status==1){
+                            toastr.success(response.msg);
+                            $(form).reset();
+                        }else{
+                            toastr.error(response.msg)
+                        }
+                    }else{
+                        $.each(response.error,function (prefix,val){
+                            $(form).find('span.'+prefix+'_error').text(val)
+                        })
+                    }
+                }
+            })
+
+
+    });
 
 </script>
 <?= $this->endSection()?>

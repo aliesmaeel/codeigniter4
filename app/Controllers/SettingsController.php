@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Libraries\SessionAuth;
+use App\Models\SocialMedia;
 use App\Models\User;
 use App\Validation\AuthValidation;
 use CodeIgniter\Filters\CSRF;
@@ -84,6 +85,33 @@ class SettingsController extends BaseController
             }
 
             return json_encode(['status' => 0, 'token' => csrf_hash(), 'msg' => 'Something Went Wrong']);
+        }
+    }
+
+    public function updateSocialMedia(){
+        $request=\Config\Services::request();
+
+        if ($request->isAJAX()){
+            $validation=\Config\Services::validation();
+            $this->validate(AuthValidation::getSocialMediaRules());
+
+            if ($validation->run()==false){
+                $errors=$validation->getErrors();
+                return json_encode(['status'=>0,'token'=>csrf_hash(),'error'=>$errors]);
+            }else{
+                $social_media=new SocialMedia();
+                $social_media_id=$social_media->asObject()->first()->id;
+                $update=$social_media->where('id',$social_media_id)->set([
+                    'facebook_url'=>$request->getVar('facebook_url'),
+                    'instagram_url'=>$request->getVar('instagram_url'),
+                    'youtube_url'=>$request->getVar('youtube_url'),
+                    'twitter_url'=>$request->getVar('twitter_url'),
+                ])->update();
+
+                if($update)
+                    return json_encode(['status'=>1,'token'=>csrf_hash(),'msg'=>'Social Media Updated Successfully ']);
+                return json_encode(['status'=>0,'token'=>csrf_hash(),'msg'=>'SomeThing Went Wrong']);
+            }
         }
     }
 }
