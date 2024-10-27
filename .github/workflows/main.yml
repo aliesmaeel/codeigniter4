@@ -1,4 +1,4 @@
-name : laravel-deployment
+name: laravel-deployment
 on:
   push:
     branches: [master]
@@ -7,10 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Create Zip deployment package
-        run : zip -r deploy.zip ./
 
-      - name : Deploy to Elastic Beanstalk
+      - name: Create Zip deployment package
+        run: zip -r deploy.zip ./
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v18
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
@@ -19,6 +23,5 @@ jobs:
           environment_name: Codeigniter-env
           existing_bucket_name: elasticbeanstalk-us-east-1-975049940648
           region: us-east-1
-          version_label: ${{github.sha}}
+          version_label: ${{ github.sha }}
           deployment_package: deploy.zip
-

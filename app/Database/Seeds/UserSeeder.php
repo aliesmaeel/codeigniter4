@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
             'name'=>'Admin',
             'email'=>'admin@login.com',
             'username'=>'admin',
-            'password'=>password_hash('123456789',PASSWORD_BCRYPT),
+            'password'=>password_hash('Bad2@',PASSWORD_BCRYPT),
         );
 
         $this->db->table('users')->insert($data);
